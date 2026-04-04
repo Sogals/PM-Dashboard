@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String?
+  email     String?
+  phone     String?
+  region    String?
+  createdAt DateTime @default(now())
+  jobs      Job[]
+}
+
+model MachineType {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  jobs        Job[]
+}
+
+model Job {
+  id             String   @id @default(cuid())
+  projectNG      String   @unique
+  moduleNumber   String?
+  salesStatus    String
+  projectStatus  String
+  customerId     String
+  customer       Customer    @relation(fields: [customerId], references: [id])
+  machineTypeId  String
+  machineType    MachineType @relation(fields: [machineTypeId], references: [id])
+  assemblyDate   DateTime?
+  testDate       DateTime?
+  shipDate       DateTime?
+  pastAssemblyDate DateTime?
+  pastTestDate     DateTime?
+  pastShipDate     DateTime?
+  slipDays       Int      @default(0)
+  shippingType   String?  @default("Standard")
+  arrangedBy     String?  @default("Customer")
+  powerSpec      String?
+  salesRep       String?
+  planner        String?
+  assemblyTech   String?
+  testTech       String?
+  priority       String   @default("Normal")
+  tags           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  options        JobOption[]
+  milestones     JobMilestone[]
+  notes          JobNote[]
+  lateParts      LatePart[]
+  checklistItems ChecklistItem[]
+  risks          Risk[]
+  changeHistory  ChangeHistory[]
+}
+
+model JobOption {
+  id            String  @id @default(cuid())
+  jobId         String
+  job           Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  count         Int     @default(1)
+  description   String
+  isHighlighted Boolean @default(false)
+}
+
+model JobMilestone {
+  id          String    @id @default(cuid())
+  jobId       String
+  job         Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  name        String
+  category    String
+  isComplete  Boolean   @default(false)
+  completedAt DateTime?
+  dueDate     DateTime?
+  order       Int       @default(0)
+}
+
+model JobNote {
+  id            String   @id @default(cuid())
+  jobId         String
+  job           Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  date          DateTime
+  content       String
+  isHighlighted Boolean  @default(false)
+  author        String?
+  createdAt     DateTime @default(now())
+}
+
+model LatePart {
+  id          String    @id @default(cuid())
+  jobId       String
+  job         Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  dockDate    DateTime?
+  description String
+  resolved    Boolean   @default(false)
+}
+
+model ChecklistItem {
+  id         String  @id @default(cuid())
+  jobId      String
+  job        Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  category   String
+  name       String
+  isComplete Boolean @default(false)
+  order      Int     @default(0)
+}
+
+model Risk {
+  id          String   @id @default(cuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  description String
+  severity    String   @default("Medium")
+  status      String   @default("Open")
+  createdAt   DateTime @default(now())
+}
+
+model ChangeHistory {
+  id        String   @id @default(cuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  field     String
+  oldValue  String?
+  newValue  String?
+  changedBy String?
+  changedAt DateTime @default(now())
+}
+
+model StatusConfig {
+  id    String @id @default(cuid())
+  type  String
+  value String
+  color String @default("#6B7280")
+  order Int    @default(0)
+}
+
+model MilestoneTemplate {
+  id       String @id @default(cuid())
+  name     String
+  category String
+  order    Int    @default(0)
+}
