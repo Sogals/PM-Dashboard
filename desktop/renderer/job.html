@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian PM — Job Detail</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .edit-field {
+      display: none;
+    }
+    .edit-mode .view-field { display: none; }
+    .edit-mode .edit-field { display: block; }
+    .edit-mode .edit-field-inline { display: inline-block; }
+    .job-detail-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 20px;
+    }
+    .milestone-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 3px;
+      transition: width .3s;
+    }
+    .add-option-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Meridian PM</h1>
+      <p>Project Management</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Views</div>
+      <button class="nav-link" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-link" data-page="orders">
+        <span class="nav-icon">📋</span> All Orders
+      </button>
+      <button class="nav-link" data-page="gantt">
+        <span class="nav-icon">📅</span> Gantt Chart
+      </button>
+      <div class="nav-section-label" style="margin-top:8px">Settings</div>
+      <button class="nav-link" data-page="admin">
+        <span class="nav-icon">⚙️</span> Admin
+      </button>
+    </nav>
+    <div class="sidebar-footer">Meridian PM v1.0</div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="back-link" onclick="navigate('orders')">← All Orders</button>
+        <h2 id="page-title">Loading...</h2>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-outline btn-sm" id="btn-edit" style="display:none">Edit</button>
+        <button class="btn btn-primary btn-sm hidden" id="btn-save">Save Changes</button>
+        <button class="btn btn-outline btn-sm hidden" id="btn-cancel">Cancel</button>
+        <button class="btn btn-danger btn-sm" id="btn-delete" style="display:none">Delete</button>
+      </div>
+    </div>
+
+    <div class="page-body" id="job-body">
+      <div class="text-muted text-center" style="padding:40px">Loading job details...</div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Note Modal -->
+<div class="modal-overlay hidden" id="note-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Note</h3>
+      <button class="modal-close" id="note-modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="note-date" />
+      </div>
+      <div class="form-group">
+        <label>Author</label>
+        <input type="text" id="note-author" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label>Note</label>
+        <textarea id="note-content" rows="5" placeholder="Enter note..."></textarea>
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:13px;">
+          <input type="checkbox" id="note-highlighted" />
+          Highlight this note
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="note-cancel">Cancel</button>
+      <button class="btn btn-primary" id="note-save">Add Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Late Part Modal -->
+<div class="modal-overlay hidden" id="latepart-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Late Part</h3>
+      <button class="modal-close" id="latepart-modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Expected Dock Date</label>
+        <input type="date" id="latepart-date" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="latepart-desc" rows="3" placeholder="Describe the late part..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="latepart-cancel">Cancel</button>
+      <button class="btn btn-primary" id="latepart-save">Add Late Part</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Risk Modal -->
+<div class="modal-overlay hidden" id="risk-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Risk</h3>
+      <button class="modal-close" id="risk-modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="risk-desc" rows="3" placeholder="Describe the risk..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Severity</label>
+          <select id="risk-severity">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="risk-status">
+            <option value="Open">Open</option>
+            <option value="Monitoring">Monitoring</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="risk-cancel">Cancel</button>
+      <button class="btn btn-primary" id="risk-save">Add Risk</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/job.js"></script>
+</body>
+</html>

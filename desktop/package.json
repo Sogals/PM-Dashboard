@@ -1,0 +1,32 @@
+{
+  "name": "meridian-pm",
+  "version": "1.0.0",
+  "description": "Meridian Project Management Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "seed": "node db/seed.js",
+    "build": "electron-builder --win --x64",
+    "build:mac": "electron-builder --mac"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.meridian.pm",
+    "productName": "Meridian PM",
+    "directories": { "output": "build" },
+    "files": ["main.js", "preload.js", "renderer/**", "db/**", "assets/**"],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg"
+    }
+  }
+}

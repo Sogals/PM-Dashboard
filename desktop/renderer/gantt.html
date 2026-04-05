@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian PM — Gantt Chart</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .gantt-wrapper {
+      overflow: auto;
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: var(--card);
+      position: relative;
+    }
+    .gantt-scroll {
+      min-width: 900px;
+    }
+    .gantt-header-row {
+      display: flex;
+      background: #F9FAFB;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .gantt-label-header {
+      width: 280px;
+      flex-shrink: 0;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      border-right: 2px solid var(--border);
+      background: #F9FAFB;
+    }
+    .gantt-months-header {
+      flex: 1;
+      position: relative;
+      height: 40px;
+    }
+    .gantt-month-tick {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border);
+    }
+    .gantt-job-row {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      min-height: 42px;
+      align-items: stretch;
+    }
+    .gantt-job-row:hover { background: #F8FAFF; }
+    .gantt-row-label {
+      width: 280px;
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-right: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .gantt-row-label:hover .job-ng-small { color: var(--blue); }
+    .gantt-bar-area {
+      flex: 1;
+      position: relative;
+      background: var(--card);
+    }
+    .gantt-grid-bg {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid #F3F4F6;
+    }
+    .gantt-bar {
+      position: absolute;
+      top: 10px;
+      height: 22px;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: opacity .12s, filter .12s;
+      z-index: 2;
+    }
+    .gantt-bar:hover { opacity: .85; filter: brightness(1.08); }
+    .gantt-today-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--red);
+      opacity: .7;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .gantt-today-label {
+      position: absolute;
+      top: 2px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--red);
+      z-index: 11;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Meridian PM</h1>
+      <p>Project Management</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Views</div>
+      <button class="nav-link" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-link" data-page="orders">
+        <span class="nav-icon">📋</span> All Orders
+      </button>
+      <button class="nav-link" data-page="gantt">
+        <span class="nav-icon">📅</span> Gantt Chart
+      </button>
+      <div class="nav-section-label" style="margin-top:8px">Settings</div>
+      <button class="nav-link" data-page="admin">
+        <span class="nav-icon">⚙️</span> Admin
+      </button>
+    </nav>
+    <div class="sidebar-footer">Meridian PM v1.0</div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h2>Gantt Chart</h2>
+        <p>Timeline view of machine orders — assembly through ship</p>
+      </div>
+      <div class="filter-bar">
+        <select class="filter-select" id="filter-status">
+          <option value="">All Statuses</option>
+          <option value="IN PROCUREMENT">IN PROCUREMENT</option>
+          <option value="IN ENGINEERING">IN ENGINEERING</option>
+          <option value="SHIPPED (SOLD)">SHIPPED (SOLD)</option>
+        </select>
+        <select class="filter-select" id="filter-span">
+          <option value="6">6 months</option>
+          <option value="9" selected>9 months</option>
+          <option value="12">12 months</option>
+          <option value="18">18 months</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="page-body" style="overflow:hidden; height:calc(100vh - 80px);">
+      <div class="gantt-wrapper" id="gantt-wrapper">
+        <div class="gantt-scroll" id="gantt-scroll">
+          <div id="gantt-content">
+            <div class="text-muted text-center" style="padding:40px">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/gantt.js"></script>
+</body>
+</html>

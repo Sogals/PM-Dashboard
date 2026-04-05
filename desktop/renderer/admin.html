@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian PM — Admin</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Meridian PM</h1>
+      <p>Project Management</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Views</div>
+      <button class="nav-link" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-link" data-page="orders">
+        <span class="nav-icon">📋</span> All Orders
+      </button>
+      <button class="nav-link" data-page="gantt">
+        <span class="nav-icon">📅</span> Gantt Chart
+      </button>
+      <div class="nav-section-label" style="margin-top:8px">Settings</div>
+      <button class="nav-link" data-page="admin">
+        <span class="nav-icon">⚙️</span> Admin
+      </button>
+    </nav>
+    <div class="sidebar-footer">Meridian PM v1.0</div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h2>Admin &amp; Configuration</h2>
+        <p>Manage machine types, statuses, and milestone templates</p>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Tabs -->
+      <div class="tabs" id="admin-tabs">
+        <button class="tab-btn active" data-tab="machine-types">Machine Types</button>
+        <button class="tab-btn" data-tab="statuses">Statuses</button>
+        <button class="tab-btn" data-tab="templates">Milestone Templates</button>
+        <button class="tab-btn" data-tab="customers">Customers</button>
+      </div>
+
+      <!-- Machine Types Tab -->
+      <div class="tab-panel active" id="tab-machine-types">
+        <div class="admin-grid">
+          <div class="card">
+            <div class="card-header"><h3>Machine Types</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="machine-types-tbody">
+                  <tr><td colspan="3" class="text-muted text-center" style="padding:16px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card admin-form-card">
+            <div class="card-header"><h3>Add Machine Type</h3></div>
+            <div style="padding:16px">
+              <div class="form-group">
+                <label>Name <span style="color:var(--red)">*</span></label>
+                <input type="text" id="mt-name" placeholder="e.g. Gen 6 2500" />
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="mt-desc" placeholder="Optional description" />
+              </div>
+              <div id="mt-error" class="form-error hidden"></div>
+              <button class="btn btn-primary" id="mt-save" style="width:100%;margin-top:4px">Add Machine Type</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statuses Tab -->
+      <div class="tab-panel hidden" id="tab-statuses">
+        <div class="admin-grid">
+          <div class="card">
+            <div class="card-header"><h3>Status Values</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Type</th><th>Value</th><th>Color</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="statuses-tbody">
+                  <tr><td colspan="4" class="text-muted text-center" style="padding:16px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card admin-form-card">
+            <div class="card-header"><h3>Add Status</h3></div>
+            <div style="padding:16px">
+              <div class="form-group">
+                <label>Type <span style="color:var(--red)">*</span></label>
+                <select id="status-type">
+                  <option value="projectStatus">Project Status</option>
+                  <option value="salesStatus">Sales Status</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Value <span style="color:var(--red)">*</span></label>
+                <input type="text" id="status-value" placeholder="e.g. IN TESTING" />
+              </div>
+              <div class="form-group">
+                <label>Color</label>
+                <input type="color" id="status-color" value="#3B82F6" style="height:36px;width:100%;padding:2px;border-radius:6px;border:1px solid var(--border);cursor:pointer" />
+              </div>
+              <div id="status-error" class="form-error hidden"></div>
+              <button class="btn btn-primary" id="status-save" style="width:100%;margin-top:4px">Add Status</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Milestone Templates Tab -->
+      <div class="tab-panel hidden" id="tab-templates">
+        <div class="admin-grid">
+          <div class="card">
+            <div class="card-header"><h3>Milestone Templates</h3>
+              <span class="text-muted" style="font-size:11px">Applied to new jobs on creation</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Category</th><th>Milestone Name</th><th>Order</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="templates-tbody">
+                  <tr><td colspan="4" class="text-muted text-center" style="padding:16px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card admin-form-card">
+            <div class="card-header"><h3>Add Milestone Template</h3></div>
+            <div style="padding:16px">
+              <div class="form-group">
+                <label>Category <span style="color:var(--red)">*</span></label>
+                <select id="tmpl-category">
+                  <option value="engineering">Engineering</option>
+                  <option value="operations">Operations</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Milestone Name <span style="color:var(--red)">*</span></label>
+                <input type="text" id="tmpl-name" placeholder="e.g. Assembly Started" />
+              </div>
+              <div class="form-group">
+                <label>Display Order</label>
+                <input type="number" id="tmpl-order" value="0" min="0" />
+              </div>
+              <div id="tmpl-error" class="form-error hidden"></div>
+              <button class="btn btn-primary" id="tmpl-save" style="width:100%;margin-top:4px">Add Template</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customers Tab -->
+      <div class="tab-panel hidden" id="tab-customers">
+        <div class="admin-grid">
+          <div class="card">
+            <div class="card-header"><h3>Customers</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Name</th><th>Contact</th><th>Email</th><th>Region</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="customers-tbody">
+                  <tr><td colspan="5" class="text-muted text-center" style="padding:16px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card admin-form-card">
+            <div class="card-header"><h3>Add Customer</h3></div>
+            <div style="padding:16px">
+              <div class="form-group">
+                <label>Name <span style="color:var(--red)">*</span></label>
+                <input type="text" id="cust-name" placeholder="Customer name" />
+              </div>
+              <div class="form-group">
+                <label>Contact</label>
+                <input type="text" id="cust-contact" placeholder="Contact person" />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="cust-email" placeholder="email@company.com" />
+              </div>
+              <div class="form-group">
+                <label>Region</label>
+                <input type="text" id="cust-region" placeholder="e.g. Midwest" />
+              </div>
+              <div id="cust-error" class="form-error hidden"></div>
+              <button class="btn btn-primary" id="cust-save" style="width:100%;margin-top:4px">Add Customer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <h3>Confirm Delete</h3>
+      <button class="modal-close" id="confirm-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-message">Are you sure you want to delete this item?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="confirm-cancel">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

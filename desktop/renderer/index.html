@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian PM — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Meridian PM</h1>
+      <p>Project Management</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Views</div>
+      <button class="nav-link" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-link" data-page="orders">
+        <span class="nav-icon">📋</span> All Orders
+      </button>
+      <button class="nav-link" data-page="gantt">
+        <span class="nav-icon">📅</span> Gantt Chart
+      </button>
+      <div class="nav-section-label" style="margin-top:8px">Settings</div>
+      <button class="nav-link" data-page="admin">
+        <span class="nav-icon">⚙️</span> Admin
+      </button>
+    </nav>
+    <div class="sidebar-footer">Meridian PM v1.0</div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h2>Dashboard</h2>
+        <p>Overview of all active machine orders</p>
+      </div>
+      <button class="btn btn-primary" id="btn-new-job">+ New Order</button>
+    </div>
+
+    <div class="page-body">
+
+      <!-- KPI Row -->
+      <div class="kpi-row" id="kpi-row">
+        <div class="kpi-card blue">
+          <div class="kpi-label">Total Active</div>
+          <div class="kpi-value" id="kpi-total">—</div>
+          <div class="kpi-sub">machine orders</div>
+        </div>
+        <div class="kpi-card blue">
+          <div class="kpi-label">In Procurement</div>
+          <div class="kpi-value" id="kpi-procurement">—</div>
+          <div class="kpi-sub">jobs</div>
+        </div>
+        <div class="kpi-card amber">
+          <div class="kpi-label">In Engineering</div>
+          <div class="kpi-value" id="kpi-engineering">—</div>
+          <div class="kpi-sub">jobs</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">At Risk (Slip &gt; 0)</div>
+          <div class="kpi-value" id="kpi-at-risk">—</div>
+          <div class="kpi-sub">jobs slipped</div>
+        </div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="dash-grid">
+        <div class="dash-left">
+
+          <!-- Active Jobs Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Active Jobs</h3>
+              <span class="text-muted" id="active-jobs-count" style="font-size:11px"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>NG #</th>
+                    <th>Customer</th>
+                    <th>Machine</th>
+                    <th>Proj Status</th>
+                    <th>Ship Date</th>
+                    <th>Slip</th>
+                  </tr>
+                </thead>
+                <tbody id="active-jobs-tbody">
+                  <tr><td colspan="6" class="text-center text-muted" style="padding:20px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <div class="dash-right">
+
+          <!-- Upcoming Shipments -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Upcoming Shipments</h3>
+              <span class="text-muted" style="font-size:11px">Next 60 days</span>
+            </div>
+            <div id="upcoming-list">
+              <div class="text-muted text-center" style="padding:20px;font-size:12px">Loading...</div>
+            </div>
+          </div>
+
+          <!-- Recent Notes -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Notes</h3>
+            </div>
+            <div id="recent-notes-list">
+              <div class="text-muted text-center" style="padding:20px;font-size:12px">Loading...</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- New Job Modal -->
+<div class="modal-overlay hidden" id="new-job-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New Machine Order</h3>
+      <button class="modal-close" id="modal-close-new-job">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Project NG # <span style="color:var(--red)">*</span></label>
+          <input type="text" id="new-project-ng" placeholder="NG4477341" />
+        </div>
+        <div class="form-group">
+          <label>Module Number</label>
+          <input type="text" id="new-module-number" placeholder="RC02-00010" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Customer</label>
+        <select id="new-customer-id">
+          <option value="">— Select Customer —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Machine Type</label>
+        <select id="new-machine-type-id">
+          <option value="">— Select Machine Type —</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Sales Status</label>
+          <select id="new-sales-status">
+            <option value="SOLD">SOLD</option>
+            <option value="FORECAST">FORECAST</option>
+            <option value="DEMO">DEMO</option>
+            <option value="CLAIMED">CLAIMED</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Project Status</label>
+          <select id="new-project-status">
+            <option value="IN PROCUREMENT">IN PROCUREMENT</option>
+            <option value="IN ENGINEERING">IN ENGINEERING</option>
+            <option value="SHIPPED (SOLD)">SHIPPED (SOLD)</option>
+            <option value="SHIPPED (NOT SOLD)">SHIPPED (NOT SOLD)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Assembly Date</label>
+          <input type="date" id="new-assembly-date" />
+        </div>
+        <div class="form-group">
+          <label>Test Date</label>
+          <input type="date" id="new-test-date" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ship Date</label>
+        <input type="date" id="new-ship-date" />
+      </div>
+      <div id="new-job-error" class="text-muted" style="font-size:12px;color:var(--red);display:none"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="new-job-cancel">Cancel</button>
+      <button class="btn btn-primary" id="new-job-save">Create Order</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian PM — All Orders</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Meridian PM</h1>
+      <p>Project Management</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Views</div>
+      <button class="nav-link" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-link" data-page="orders">
+        <span class="nav-icon">📋</span> All Orders
+      </button>
+      <button class="nav-link" data-page="gantt">
+        <span class="nav-icon">📅</span> Gantt Chart
+      </button>
+      <div class="nav-section-label" style="margin-top:8px">Settings</div>
+      <button class="nav-link" data-page="admin">
+        <span class="nav-icon">⚙️</span> Admin
+      </button>
+    </nav>
+    <div class="sidebar-footer">Meridian PM v1.0</div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h2>All Orders</h2>
+        <p id="orders-count">Loading...</p>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('dashboard')">+ New Order</button>
+    </div>
+
+    <div class="page-body">
+      <div class="card">
+        <!-- Filter Bar -->
+        <div class="card-header" style="flex-wrap:wrap; gap:8px;">
+          <div class="filter-bar" style="flex:1">
+            <input type="text" class="search-input" id="search-input" placeholder="Search NG#, customer, module..." />
+            <select class="filter-select" id="filter-proj-status">
+              <option value="">All Project Statuses</option>
+              <option value="IN PROCUREMENT">IN PROCUREMENT</option>
+              <option value="IN ENGINEERING">IN ENGINEERING</option>
+              <option value="SHIPPED (SOLD)">SHIPPED (SOLD)</option>
+              <option value="SHIPPED (NOT SOLD)">SHIPPED (NOT SOLD)</option>
+            </select>
+            <select class="filter-select" id="filter-sales-status">
+              <option value="">All Sales Statuses</option>
+              <option value="SOLD">SOLD</option>
+              <option value="FORECAST">FORECAST</option>
+              <option value="DEMO">DEMO</option>
+              <option value="CLAIMED">CLAIMED</option>
+            </select>
+            <select class="filter-select" id="filter-machine-type">
+              <option value="">All Machine Types</option>
+            </select>
+            <button class="btn btn-outline btn-sm" id="btn-clear-filters">Clear</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table id="orders-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-col="project_ng">NG #</th>
+                <th class="sortable" data-col="module_number">Module #</th>
+                <th class="sortable" data-col="customer_name">Customer</th>
+                <th class="sortable" data-col="machine_type_name">Machine</th>
+                <th class="sortable" data-col="sales_status">Sales</th>
+                <th class="sortable" data-col="project_status">Project Status</th>
+                <th class="sortable" data-col="assembly_date">Assembly</th>
+                <th class="sortable" data-col="test_date">Test</th>
+                <th class="sortable" data-col="ship_date">Ship</th>
+                <th class="sortable" data-col="slip_days">Slip</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <tr><td colspan="11" class="text-center text-muted" style="padding:30px">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/orders.js"></script>
+</body>
+</html>
